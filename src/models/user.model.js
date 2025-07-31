@@ -18,6 +18,8 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
+
+        FCM_Token: { type: String, }
     },
 
     { timestamps: true }

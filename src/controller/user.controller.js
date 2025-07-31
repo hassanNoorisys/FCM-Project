@@ -3,7 +3,9 @@ import AppError from '../utils/appError.js';
 import constants from '../config/constants.js';
 import {
     loginUsersService,
-    registerUserService
+    registerFCMTOkenService,
+    registerUserService,
+    sendFCMNotificationService
 } from '../services/user.service.js';
 import responseHandler from '../utils/responseHandler.js';
 
@@ -45,5 +47,28 @@ const loginUser = asyncHandler(async (req, res, next) => {
     });
 });
 
+// register token
+const registerFCMToken = asyncHandler(async (req, res, next) => {
 
-export { registerUser, loginUser };
+    const token = req.body.token
+    const userId = req.user.id
+
+    await registerFCMTOkenService(userId, token)
+
+    responseHandler(res, constants.OK, 'success', 'FCM tokene registered successfully')
+
+})
+
+// send notification
+const sendNotification = asyncHandler(async (req, res, next) => {
+
+    const userId = req.user.id
+    const { title, body } = req.body
+
+    const response = await sendFCMNotificationService(userId, { title, body })
+
+    responseHandler(res, constants.OK, 'success', 'Notification sent successfully', response)
+})
+
+
+export { registerUser, loginUser, registerFCMToken, sendNotification };

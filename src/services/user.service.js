@@ -1,4 +1,5 @@
 import constants from '../config/constants.js';
+import messeging from '../config/firebase.config.js';
 import userModel from '../models/user.model.js';
 import AppError from '../utils/appError.js';
 import bcrypt from 'bcryptjs';
@@ -50,9 +51,41 @@ const loginUsersService = async (data) => {
     return token;
 };
 
+// register FCM token service
+const registerFCMTOkenService = async (filter, token) => {
+
+    const user = await userModel.findByIdAndUpdate({ _id: filter }, { FCM_Token: token })
+
+    console.log('register FCM token service --> ', user)
+
+}
+
+// send FCM notification 
+const sendFCMNotificationService = async (filter, data) => {
+
+    const { title, body } = data
+
+    const user = await userModel.findOne({ _id: filter })
+
+    if (!user) throw new AppError(constants.NOT_FOUND, 'User is not present');
+
+    const message = {
+
+        notification: {
+
+            title, body
+        },
+        token: user.FCM_Token
+    }
+
+    const response = await messeging.send(message)
+
+    return response
+}
 
 export {
     registerUserService,
     loginUsersService,
-
+    registerFCMTOkenService,
+    sendFCMNotificationService
 };
