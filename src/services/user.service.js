@@ -56,6 +56,8 @@ const registerFCMTOkenService = async (filter, token) => {
 
     const user = await userModel.findByIdAndUpdate({ _id: filter }, { FCM_Token: token })
 
+    if (!user) throw new AppError(constants.NOT_FOUND, 'User is not present');
+
     console.log('register FCM token service --> ', user)
 
 }
@@ -75,8 +77,11 @@ const sendFCMNotificationService = async (filter, data) => {
 
             title, body
         },
+
         token: user.FCM_Token
     }
+
+    // console.log('send noti service --> ', message)
 
     const response = await messeging.send(message)
 

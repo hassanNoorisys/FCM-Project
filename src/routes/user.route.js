@@ -16,5 +16,5 @@ route
 
 route.post('/register-token', verifyToken, registerFCMToken)
 
-route.post('send-notification', verifyToken, sendNotification)
+route.post('/send-notification', verifyToken, sendNotification)
 export default route;
